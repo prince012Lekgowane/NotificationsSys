@@ -287,8 +287,8 @@ class LocalDataSourceImpl implements LocalDataSource {
         importance: _getImportance(notification.priority),
         priority: _getPriority(notification.priority),
         icon: notification.iconUrl,
-        color: notification.color != null ? 
-            Color(int.parse(notification.color!.replaceFirst('#', ''), radix: 16)  0xFF000000) : null,
+        color: notification.color != null ?
+            Color((int.parse(notification.color!.replaceFirst('#', ''), radix: 16)) | 0xFF000000) : null,
         tag: notification.tag,
         groupKey: notification.group,
       );

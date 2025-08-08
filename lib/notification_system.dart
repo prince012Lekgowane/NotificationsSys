@@ -1,8 +1,7 @@
 library notification_system;
 
 // Core Services
-export 'src/core/di/injection.dart'
-    hide NotificationBloc, DeviceBloc, TopicBloc;
+export 'src/core/di/injection.dart';
 export 'src/core/constants/constants.dart' hide NotificationAction;
 export 'src/core/errors/failures.dart';
 export 'src/core/utils/notification_utils.dart';

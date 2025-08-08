@@ -84,7 +84,7 @@ class TopicEntity extends Equatable {
   // Increment subscriber count
   TopicEntity incrementSubscriberCount() {
     return copyWith(
-      subscriberCount: subscriberCount  1,
+      subscriberCount: subscriberCount + 1,
       updatedAt: DateTime.now(),
     );
   }

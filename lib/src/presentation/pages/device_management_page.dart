@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc/device_bloc.dart';
+import '../bloc/device_bloc.dart' as presentation;
 import '../widgets/device_card.dart';
 import '../../core/di/injection.dart';
 
@@ -11,7 +11,7 @@ class DeviceManagementPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<DeviceBloc>()..add(const LoadDevices()),
+      create: (context) => getIt<presentation.DeviceBloc>()..add(const presentation.LoadDevices()),
       child: const _DeviceManagementView(),
     );
   }
@@ -29,18 +29,18 @@ class _DeviceManagementView extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
-              context.read<DeviceBloc>().add(const LoadDevices());
+              context.read<presentation.DeviceBloc>().add(const presentation.LoadDevices());
             },
           ),
         ],
       ),
-      body: BlocBuilder<DeviceBloc, DeviceState>(
+      body: BlocBuilder<presentation.DeviceBloc, presentation.DeviceState>(
         builder: (context, state) {
-          if (state is DeviceLoading) {
+          if (state is presentation.DeviceLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (state is DeviceError) {
+          if (state is presentation.DeviceError) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -51,7 +51,7 @@ class _DeviceManagementView extends StatelessWidget {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<DeviceBloc>().add(const LoadDevices());
+                      context.read<presentation.DeviceBloc>().add(const presentation.LoadDevices());
                     },
                     child: const Text('Retry'),
                   ),
@@ -60,7 +60,7 @@ class _DeviceManagementView extends StatelessWidget {
             );
           }
 
-          if (state is DeviceLoaded) {
+          if (state is presentation.DeviceLoaded) {
             if (state.devices.isEmpty) {
               return const Center(
                 child: Column(

@@ -5,6 +5,7 @@ import '../../domain/entities/notification_entity.dart';
 import '../../domain/entities/device_entity.dart';
 import '../../domain/entities/topic_entity.dart';
 import '../../domain/repositories/notification_repository.dart';
+import '../../core/constants/constants.dart';
 import '../../core/errors/failures.dart';
 import '../datasources/firebase_datasource.dart';
 import '../datasources/local_datasource.dart';
