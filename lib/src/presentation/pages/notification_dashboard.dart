@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc/notification_bloc.dart';
+import '../bloc/notification_bloc.dart' as presentation;
 import '../widgets/notification_card.dart';
 import '../../core/di/injection.dart';
+import '../../core/constants/constants.dart';
 
 class NotificationDashboard extends StatelessWidget {
   const NotificationDashboard({Key? key}) : super(key: key);
@@ -13,7 +14,7 @@ class NotificationDashboard extends StatelessWidget {
     return BlocProvider(
       create:
           (context) =>
-              getIt<NotificationBloc>()..add(const LoadNotifications()),
+              getIt<presentation.NotificationBloc>()..add(const presentation.LoadNotifications()),
       child: const _NotificationDashboardView(),
     );
   }
@@ -31,20 +32,20 @@ class _NotificationDashboardView extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
-              context.read<NotificationBloc>().add(
-                const RefreshNotifications(),
+              context.read<presentation.NotificationBloc>().add(
+                const presentation.RefreshNotifications(),
               );
             },
           ),
         ],
       ),
-      body: BlocBuilder<NotificationBloc, NotificationState>(
+      body: BlocBuilder<presentation.NotificationBloc, presentation.NotificationState>(
         builder: (context, state) {
-          if (state is NotificationLoading) {
+          if (state is presentation.NotificationLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (state is NotificationError) {
+          if (state is presentation.NotificationError) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -79,7 +80,7 @@ class _NotificationDashboardView extends StatelessWidget {
             );
           }
 
-          if (state is NotificationLoaded) {
+          if (state is presentation.NotificationLoaded) {
             if (state.notifications.isEmpty) {
               return const Center(
                 child: Column(
@@ -111,8 +112,8 @@ class _NotificationDashboardView extends StatelessWidget {
 
             return RefreshIndicator(
               onRefresh: () async {
-                context.read<NotificationBloc>().add(
-                  const RefreshNotifications(),
+                context.read<presentation.NotificationBloc>().add(
+                  const presentation.RefreshNotifications(),
                 );
               },
               child: ListView.builder(
@@ -123,8 +124,8 @@ class _NotificationDashboardView extends StatelessWidget {
                     notification: notification,
                     onTap: () {
                       if (!notification.isRead) {
-                        context.read<NotificationBloc>().add(
-                          MarkNotificationAsRead(notification.id),
+                        context.read<presentation.NotificationBloc>().add(
+                          presentation.MarkNotificationAsRead(notification.id),
                         );
                       }
                     },

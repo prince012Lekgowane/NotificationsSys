@@ -1,5 +1,6 @@
 
 import 'package:equatable/equatable.dart';
+import '../../core/constants/constants.dart';
 
 class NotificationEntity extends Equatable {
   final String id;
@@ -151,7 +152,7 @@ class NotificationEntity extends Equatable {
     return copyWith(
       isRead: true,
       readAt: DateTime.now(),
-      status: 'read',
+      status: NotificationStatus.read,
     );
   }
 

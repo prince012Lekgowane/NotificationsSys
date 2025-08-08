@@ -128,16 +128,3 @@ Future<void> initializeDependencies() async {
 Future<void> resetDependencies() async {
   await getIt.reset();
 }
-
-// Type aliases for easier access
-class NotificationBloc extends notification_bloc.NotificationBloc {
-  NotificationBloc({required super.sendNotification, required super.getNotificationsHistory});
-}
-
-class DeviceBloc extends device_bloc.DeviceBloc {
-  DeviceBloc({required super.registerDevice, required super.getDevices});
-}
-
-class TopicBloc extends topic_bloc.TopicBloc {
-  TopicBloc({required super.subscribeToTopic});
-}
