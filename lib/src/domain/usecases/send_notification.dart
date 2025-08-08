@@ -1,7 +1,7 @@
-
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../../notification_system.dart';
 import '../entities/notification_entity.dart';
 import '../repositories/notification_repository.dart';
 import '../../core/errors/failures.dart';
@@ -12,7 +12,8 @@ class SendNotification {
 
   SendNotification(this.repository);
 
-  Future<Either<Failure, NotificationEntity>> call(NotificationEntity notification) async {
+  Future<Either<Failure, NotificationEntity>> call(
+      NotificationEntity notification) async {
     // Validate notification data
     final validationResult = _validateNotification(notification);
     if (validationResult != null) {
@@ -41,7 +42,8 @@ class SendNotification {
     }
 
     // Check if at least one target is specified
-    if (notification.targetDevices.isEmpty && notification.targetTopics.isEmpty) {
+    if (notification.targetDevices.isEmpty &&
+        notification.targetTopics.isEmpty) {
       return const InvalidNotificationDataFailure(
         message: 'At least one target device or topic must be specified',
       );
@@ -90,7 +92,8 @@ class SendNotification {
     final sanitizedBody = notification.body.trim();
 
     // Sanitize data payload
-    final sanitizedData = NotificationUtils.sanitizeNotificationData(notification.data);
+    final sanitizedData =
+        NotificationUtils.sanitizeNotificationData(notification.data);
 
     // Ensure required fields are set
     final sanitizedNotification = notification.copyWith(
@@ -117,7 +120,8 @@ class SendBulkNotifications {
     // Validate all notifications
     for (final notification in params.notifications) {
       final sendNotification = SendNotification(repository);
-      final validationResult = sendNotification._validateNotification(notification);
+      final validationResult =
+          sendNotification._validateNotification(notification);
       if (validationResult != null) {
         return Left(validationResult);
       }
@@ -202,7 +206,8 @@ class SendNotificationFromTemplateParams extends Equatable {
   });
 
   @override
-  List<Object?> get props => [templateId, variables, targetDevices, targetTopics];
+  List<Object?> get props =>
+      [templateId, variables, targetDevices, targetTopics];
 }
 
 class ScheduleNotificationParams extends Equatable {

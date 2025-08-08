@@ -1,11 +1,12 @@
 
 import 'package:dartz/dartz.dart';
-
+import '../../core/constants/constants.dart';
 import '../../domain/entities/notification_entity.dart';
 import '../../domain/entities/device_entity.dart';
+import '../../domain/entities/notification_template.dart' show NotificationTemplate;
 import '../../domain/entities/topic_entity.dart';
-import '../../domain/repositories/notification_repository.dart';
 import '../../core/errors/failures.dart';
+import '../../domain/repositories/notification_repository.dart';
 import '../datasources/firebase_datasource.dart';
 import '../datasources/local_datasource.dart';
 import '../models/notification_model.dart';

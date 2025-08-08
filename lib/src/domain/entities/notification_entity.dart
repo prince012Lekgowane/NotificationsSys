@@ -1,5 +1,5 @@
-
 import 'package:equatable/equatable.dart';
+import '../../core/constants/constants.dart';
 
 class NotificationEntity extends Equatable {
   final String id;
@@ -151,7 +151,7 @@ class NotificationEntity extends Equatable {
     return copyWith(
       isRead: true,
       readAt: DateTime.now(),
-      status: 'read',
+      status: NotificationStatus.read,
     );
   }
 
@@ -183,7 +183,9 @@ class NotificationEntity extends Equatable {
 
   // Check if notification has been interacted with
   bool get hasBeenInteracted {
-    return isRead || analytics.containsKey('clicked') || analytics.containsKey('dismissed');
+    return isRead ||
+        analytics.containsKey('clicked') ||
+        analytics.containsKey('dismissed');
   }
 
   // Get notification age

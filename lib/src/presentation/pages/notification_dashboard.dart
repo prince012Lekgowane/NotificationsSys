@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc/notification_bloc.dart';
+import '../bloc/notification_bloc.dart' as presentation;
 import '../widgets/notification_card.dart';
 import '../../core/di/injection.dart';
+import '../../core/constants/constants.dart';
 
 class NotificationDashboard extends StatelessWidget {
   const NotificationDashboard({Key? key}) : super(key: key);
@@ -11,9 +12,8 @@ class NotificationDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create:
-          (context) =>
-              getIt<NotificationBloc>()..add(const LoadNotifications()),
+      create: (context) => getIt<presentation.NotificationBloc>()
+        ..add(const presentation.LoadNotifications()),
       child: const _NotificationDashboardView(),
     );
   }
@@ -31,20 +31,21 @@ class _NotificationDashboardView extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
-              context.read<NotificationBloc>().add(
-                const RefreshNotifications(),
-              );
+              context.read<presentation.NotificationBloc>().add(
+                    const presentation.RefreshNotifications(),
+                  );
             },
           ),
         ],
       ),
-      body: BlocBuilder<NotificationBloc, NotificationState>(
+      body: BlocBuilder<presentation.NotificationBloc,
+          presentation.NotificationState>(
         builder: (context, state) {
-          if (state is NotificationLoading) {
+          if (state is presentation.NotificationLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (state is NotificationError) {
+          if (state is presentation.NotificationError) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -52,7 +53,7 @@ class _NotificationDashboardView extends StatelessWidget {
                   Icon(
                     Icons.error_outline,
                     size: 64,
-                    color: Theme.of(context).errorColor,
+                    color: Theme.of(context).colorScheme.error,
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -68,9 +69,9 @@ class _NotificationDashboardView extends StatelessWidget {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<NotificationBloc>().add(
-                        const LoadNotifications(),
-                      );
+                      context.read<presentation.NotificationBloc>().add(
+                            const presentation.LoadNotifications(),
+                          );
                     },
                     child: const Text('Retry'),
                   ),
@@ -79,7 +80,7 @@ class _NotificationDashboardView extends StatelessWidget {
             );
           }
 
-          if (state is NotificationLoaded) {
+          if (state is presentation.NotificationLoaded) {
             if (state.notifications.isEmpty) {
               return const Center(
                 child: Column(
@@ -111,9 +112,9 @@ class _NotificationDashboardView extends StatelessWidget {
 
             return RefreshIndicator(
               onRefresh: () async {
-                context.read<NotificationBloc>().add(
-                  const RefreshNotifications(),
-                );
+                context.read<presentation.NotificationBloc>().add(
+                      const presentation.RefreshNotifications(),
+                    );
               },
               child: ListView.builder(
                 itemCount: state.notifications.length,
@@ -123,9 +124,10 @@ class _NotificationDashboardView extends StatelessWidget {
                     notification: notification,
                     onTap: () {
                       if (!notification.isRead) {
-                        context.read<NotificationBloc>().add(
-                          MarkNotificationAsRead(notification.id),
-                        );
+                        context.read<presentation.NotificationBloc>().add(
+                              presentation.MarkNotificationAsRead(
+                                  notification.id),
+                            );
                       }
                     },
                   );
@@ -153,54 +155,53 @@ class _NotificationDashboardView extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder:
-          (dialogContext) => AlertDialog(
-            title: const Text('Send Test Notification'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: titleController,
-                  decoration: const InputDecoration(
-                    labelText: 'Title',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: bodyController,
-                  decoration: const InputDecoration(
-                    labelText: 'Body',
-                    border: OutlineInputBorder(),
-                  ),
-                  maxLines: 3,
-                ),
-              ],
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Send Test Notification'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: titleController,
+              decoration: const InputDecoration(
+                labelText: 'Title',
+                border: OutlineInputBorder(),
+              ),
             ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(dialogContext).pop();
-                },
-                child: const Text('Cancel'),
+            const SizedBox(height: 16),
+            TextField(
+              controller: bodyController,
+              decoration: const InputDecoration(
+                labelText: 'Body',
+                border: OutlineInputBorder(),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  if (titleController.text.isNotEmpty &&
-                      bodyController.text.isNotEmpty) {
-                    // This would create and send a notification
-                    // For demo purposes, we'll just close the dialog
-                    Navigator.of(dialogContext).pop();
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Test notification sent!')),
-                    );
-                  }
-                },
-                child: const Text('Send'),
-              ),
-            ],
+              maxLines: 3,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+            },
+            child: const Text('Cancel'),
           ),
+          ElevatedButton(
+            onPressed: () {
+              if (titleController.text.isNotEmpty &&
+                  bodyController.text.isNotEmpty) {
+                // This would create and send a notification
+                // For demo purposes, we'll just close the dialog
+                Navigator.of(dialogContext).pop();
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Test notification sent!')),
+                );
+              }
+            },
+            child: const Text('Send'),
+          ),
+        ],
+      ),
     );
   }
 }

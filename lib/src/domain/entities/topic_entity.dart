@@ -1,4 +1,3 @@
-
 import 'package:equatable/equatable.dart';
 
 class TopicEntity extends Equatable {
@@ -84,7 +83,7 @@ class TopicEntity extends Equatable {
   // Increment subscriber count
   TopicEntity incrementSubscriberCount() {
     return copyWith(
-      subscriberCount: subscriberCount  1,
+      subscriberCount: subscriberCount + 1,
       updatedAt: DateTime.now(),
     );
   }
@@ -110,7 +109,7 @@ class TopicEntity extends Equatable {
   // Add tag
   TopicEntity addTag(String tag) {
     if (tags.contains(tag)) return this;
-    
+
     final updatedTags = List<String>.from(tags)..add(tag);
     return copyWith(
       tags: updatedTags,
@@ -121,7 +120,7 @@ class TopicEntity extends Equatable {
   // Remove tag
   TopicEntity removeTag(String tag) {
     if (!tags.contains(tag)) return this;
-    
+
     final updatedTags = List<String>.from(tags)..remove(tag);
     return copyWith(
       tags: updatedTags,
@@ -248,9 +247,10 @@ class TopicEntity extends Equatable {
 
   // Get subscription growth rate
   double get growthRate {
-    final initialCount = metadata['initialSubscriberCount'] as int? ?? subscriberCount;
+    final initialCount =
+        metadata['initialSubscriberCount'] as int? ?? subscriberCount;
     if (initialCount == 0) return 0.0;
-    
+
     return ((subscriberCount - initialCount) / initialCount) * 100;
   }
 
@@ -410,7 +410,8 @@ class TopicAnalytics extends Equatable {
       totalSubscribers: totalSubscribers ?? this.totalSubscribers,
       activeSubscribers: activeSubscribers ?? this.activeSubscribers,
       notificationsSent: notificationsSent ?? this.notificationsSent,
-      notificationsDelivered: notificationsDelivered ?? this.notificationsDelivered,
+      notificationsDelivered:
+          notificationsDelivered ?? this.notificationsDelivered,
       notificationsRead: notificationsRead ?? this.notificationsRead,
       engagementRate: engagementRate ?? this.engagementRate,
       unsubscribeRate: unsubscribeRate ?? this.unsubscribeRate,

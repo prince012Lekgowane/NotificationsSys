@@ -153,7 +153,7 @@ class NotificationModel extends NotificationEntity {
       analytics: analytics,
       isRead: isRead,
       isActionable: isActionable,
-      actions: actions.map((action) => action.toEntity()).toList(),
+       actions: actions.map((action) => (action as NotificationActionModel).toEntity()).toList(),
     );
   }
 

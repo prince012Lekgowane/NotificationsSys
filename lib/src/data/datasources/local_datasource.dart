@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,21 +12,21 @@ abstract class LocalDataSource {
   Future<DeviceModel?> getDevice(String deviceId);
   Future<List<DeviceModel>> getAllDevices();
   Future<void> removeDevice(String deviceId);
-  
+
   Future<void> saveNotification(NotificationModel notification);
   Future<List<NotificationModel>> getNotificationHistory({int limit = 50});
   Future<NotificationModel?> getNotification(String notificationId);
   Future<void> removeNotification(String notificationId);
   Future<void> clearNotificationHistory();
-  
+
   Future<void> saveTopics(List<TopicModel> topics);
   Future<List<TopicModel>> getTopics();
   Future<void> addTopic(TopicModel topic);
   Future<void> removeTopic(String topicId);
-  
+
   Future<void> saveSettings(Map<String, dynamic> settings);
   Future<Map<String, dynamic>> getSettings();
-  
+
   Future<void> showLocalNotification(NotificationModel notification);
   Future<void> cancelLocalNotification(int id);
   Future<void> cancelAllLocalNotifications();
@@ -37,14 +36,15 @@ class LocalDataSourceImpl implements LocalDataSource {
   final SharedPreferences sharedPreferences;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
-  LocalDataSourceImpl(this.sharedPreferences, this.flutterLocalNotificationsPlugin);
+  LocalDataSourceImpl(
+      this.sharedPreferences, this.flutterLocalNotificationsPlugin);
 
   @override
   Future<void> saveDevice(DeviceModel device) async {
     try {
       final deviceJson = json.encode(device.toJson());
       await sharedPreferences.setString('device_${device.id}', deviceJson);
-      
+
       // Update devices list
       final deviceIds = sharedPreferences.getStringList('device_ids') ?? [];
       if (!deviceIds.contains(device.id)) {
@@ -61,7 +61,7 @@ class LocalDataSourceImpl implements LocalDataSource {
     try {
       final deviceJson = sharedPreferences.getString('device_$deviceId');
       if (deviceJson == null) return null;
-      
+
       final deviceMap = json.decode(deviceJson) as Map<String, dynamic>;
       return DeviceModel.fromJson(deviceMap);
     } catch (e) {
@@ -74,14 +74,14 @@ class LocalDataSourceImpl implements LocalDataSource {
     try {
       final deviceIds = sharedPreferences.getStringList('device_ids') ?? [];
       final devices = <DeviceModel>[];
-      
+
       for (final deviceId in deviceIds) {
         final device = await getDevice(deviceId);
         if (device != null) {
           devices.add(device);
         }
       }
-      
+
       return devices;
     } catch (e) {
       throw Exception('Failed to get all devices: $e');
@@ -92,7 +92,7 @@ class LocalDataSourceImpl implements LocalDataSource {
   Future<void> removeDevice(String deviceId) async {
     try {
       await sharedPreferences.remove('device_$deviceId');
-      
+
       final deviceIds = sharedPreferences.getStringList('device_ids') ?? [];
       deviceIds.remove(deviceId);
       await sharedPreferences.setStringList('device_ids', deviceIds);
@@ -105,20 +105,24 @@ class LocalDataSourceImpl implements LocalDataSource {
   Future<void> saveNotification(NotificationModel notification) async {
     try {
       final notificationJson = json.encode(notification.toJson());
-      await sharedPreferences.setString('notification_${notification.id}', notificationJson);
-      
+      await sharedPreferences.setString(
+          'notification_${notification.id}', notificationJson);
+
       // Update notifications list
-      final notificationIds = sharedPreferences.getStringList('notification_ids') ?? [];
+      final notificationIds =
+          sharedPreferences.getStringList('notification_ids') ?? [];
       if (!notificationIds.contains(notification.id)) {
         notificationIds.add(notification.id);
-        
+
         // Keep only the latest notifications (limit to maxNotificationHistory)
-        if (notificationIds.length > NotificationConstants.maxNotificationHistory) {
+        if (notificationIds.length >
+            NotificationConstants.maxNotificationHistory) {
           final oldNotificationId = notificationIds.removeAt(0);
           await sharedPreferences.remove('notification_$oldNotificationId');
         }
-        
-        await sharedPreferences.setStringList('notification_ids', notificationIds);
+
+        await sharedPreferences.setStringList(
+            'notification_ids', notificationIds);
       }
     } catch (e) {
       throw Exception('Failed to save notification: $e');
@@ -126,21 +130,23 @@ class LocalDataSourceImpl implements LocalDataSource {
   }
 
   @override
-  Future<List<NotificationModel>> getNotificationHistory({int limit = 50}) async {
+  Future<List<NotificationModel>> getNotificationHistory(
+      {int limit = 50}) async {
     try {
-      final notificationIds = sharedPreferences.getStringList('notification_ids') ?? [];
+      final notificationIds =
+          sharedPreferences.getStringList('notification_ids') ?? [];
       final notifications = <NotificationModel>[];
-      
+
       // Get the most recent notifications (reverse order)
       final recentIds = notificationIds.reversed.take(limit);
-      
+
       for (final notificationId in recentIds) {
         final notification = await getNotification(notificationId);
         if (notification != null) {
           notifications.add(notification);
         }
       }
-      
+
       return notifications;
     } catch (e) {
       throw Exception('Failed to get notification history: $e');
@@ -150,10 +156,12 @@ class LocalDataSourceImpl implements LocalDataSource {
   @override
   Future<NotificationModel?> getNotification(String notificationId) async {
     try {
-      final notificationJson = sharedPreferences.getString('notification_$notificationId');
+      final notificationJson =
+          sharedPreferences.getString('notification_$notificationId');
       if (notificationJson == null) return null;
-      
-      final notificationMap = json.decode(notificationJson) as Map<String, dynamic>;
+
+      final notificationMap =
+          json.decode(notificationJson) as Map<String, dynamic>;
       return NotificationModel.fromJson(notificationMap);
     } catch (e) {
       throw Exception('Failed to get notification: $e');
@@ -164,10 +172,12 @@ class LocalDataSourceImpl implements LocalDataSource {
   Future<void> removeNotification(String notificationId) async {
     try {
       await sharedPreferences.remove('notification_$notificationId');
-      
-      final notificationIds = sharedPreferences.getStringList('notification_ids') ?? [];
+
+      final notificationIds =
+          sharedPreferences.getStringList('notification_ids') ?? [];
       notificationIds.remove(notificationId);
-      await sharedPreferences.setStringList('notification_ids', notificationIds);
+      await sharedPreferences.setStringList(
+          'notification_ids', notificationIds);
     } catch (e) {
       throw Exception('Failed to remove notification: $e');
     }
@@ -176,12 +186,13 @@ class LocalDataSourceImpl implements LocalDataSource {
   @override
   Future<void> clearNotificationHistory() async {
     try {
-      final notificationIds = sharedPreferences.getStringList('notification_ids') ?? [];
-      
+      final notificationIds =
+          sharedPreferences.getStringList('notification_ids') ?? [];
+
       for (final notificationId in notificationIds) {
         await sharedPreferences.remove('notification_$notificationId');
       }
-      
+
       await sharedPreferences.remove('notification_ids');
     } catch (e) {
       throw Exception('Failed to clear notification history: $e');
@@ -204,10 +215,11 @@ class LocalDataSourceImpl implements LocalDataSource {
     try {
       final topicsJsonString = sharedPreferences.getString('topics');
       if (topicsJsonString == null) return [];
-      
+
       final topicsJson = json.decode(topicsJsonString) as List<dynamic>;
       return topicsJson
-          .map((topicJson) => TopicModel.fromJson(topicJson as Map<String, dynamic>))
+          .map((topicJson) =>
+              TopicModel.fromJson(topicJson as Map<String, dynamic>))
           .toList();
     } catch (e) {
       throw Exception('Failed to get topics: $e');
@@ -240,7 +252,8 @@ class LocalDataSourceImpl implements LocalDataSource {
   Future<void> saveSettings(Map<String, dynamic> settings) async {
     try {
       final settingsJson = json.encode(settings);
-      await sharedPreferences.setString(NotificationConstants.notificationSettingsKey, settingsJson);
+      await sharedPreferences.setString(
+          NotificationConstants.notificationSettingsKey, settingsJson);
     } catch (e) {
       throw Exception('Failed to save settings: $e');
     }
@@ -249,7 +262,8 @@ class LocalDataSourceImpl implements LocalDataSource {
   @override
   Future<Map<String, dynamic>> getSettings() async {
     try {
-      final settingsJson = sharedPreferences.getString(NotificationConstants.notificationSettingsKey);
+      final settingsJson = sharedPreferences
+          .getString(NotificationConstants.notificationSettingsKey);
       if (settingsJson == null) {
         // Return default settings
         return {
@@ -270,7 +284,7 @@ class LocalDataSourceImpl implements LocalDataSource {
           },
         };
       }
-      
+
       return json.decode(settingsJson) as Map<String, dynamic>;
     } catch (e) {
       throw Exception('Failed to get settings: $e');
@@ -287,8 +301,11 @@ class LocalDataSourceImpl implements LocalDataSource {
         importance: _getImportance(notification.priority),
         priority: _getPriority(notification.priority),
         icon: notification.iconUrl,
-        color: notification.color != null ? 
-            Color(int.parse(notification.color!.replaceFirst('#', ''), radix: 16)  0xFF000000) : null,
+        color: notification.color != null
+            ? Color((int.parse(notification.color!.replaceFirst('#', ''),
+                    radix: 16)) |
+                0xFF000000)
+            : null,
         tag: notification.tag,
         groupKey: notification.group,
       );
