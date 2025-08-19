@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "562385036132",
+    "project_id": "fir-first-b5f9d",
+    "storage_bucket": "fir-first-b5f9d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:562385036132:android:dd29425cef54e06830d071",
+        "android_client_info": {
+          "package_name": "com.batau.notistream"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBm4nXFEH6o2y6mXUXVkw4L22K852MeJHc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:562385036132:android:2744c63d08ff031530d071",
+        "android_client_info": {
+          "package_name": "com.example.firebase_first"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBm4nXFEH6o2y6mXUXVkw4L22K852MeJHc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
