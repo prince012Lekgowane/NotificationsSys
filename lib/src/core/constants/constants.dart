@@ -1,7 +1,7 @@
 class NotificationConstants {
   // Firebase Configuration
-  static const String fcmServerKey = 'your_fcm_server_key_here';
-  static const String fcmSenderId = 'your_sender_id_here';
+  static const String fcmServerKey = 'AAAAXXX...'; // Replace with your actual FCM server key
+  static const String fcmSenderId = '123456789012'; // Replace with your actual sender ID
 
   // API Endpoints
   static const String baseUrl = 'https://fcm.googleapis.com';

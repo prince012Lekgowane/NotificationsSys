@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:dio/dio.dart';
 import '../models/notification_model.dart';
+import '../../core/constants/constants.dart';
 
 abstract class FirebaseDataSource {
   Future<String?> getFCMToken();
@@ -55,7 +56,7 @@ class FirebaseDataSourceImpl implements FirebaseDataSource {
         options: Options(
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'key=YOUR_SERVER_KEY', // This should be configured
+            'Authorization': 'key=${NotificationConstants.fcmServerKey}',
           },
         ),
       );
